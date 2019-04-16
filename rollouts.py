@@ -57,14 +57,16 @@ class Rollout(object):
         self.update_info()
 
     def calculate_reward(self):
-        #int_rew = self.dynamics.calculate_loss(ob=self.buf_obs,
-        #                                       last_ob=self.buf_obs_last,
-        #                                       acs=self.buf_acs)
+        int_rew = self.dynamics.calculate_loss(ob=self.buf_obs,
+                                               last_ob=self.buf_obs_last,
+                                               acs=self.buf_acs)
         
         #we define a new int_rew for the new transparency project to evaluate its inside relation
-        int_rew =  (- self.buf_ext_rews) ** 2
+        
         self.buf_rews[:] = self.reward_fun(int_rew=int_rew, ext_rew=self.buf_ext_rews)
-
+        int_rew_2 =  (self.buf_rews[:] - self.buf_ext_rews) ** 2
+        self.buf_rews[:] = self.reward_fun(int_rew=int_rew_2, ext_rew=self.buf_ext_rews)
+        
     def rollout_step(self):
         t = self.step_count % self.nsteps
         s = t % self.nsteps_per_seg
