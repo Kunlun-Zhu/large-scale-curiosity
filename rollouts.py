@@ -63,7 +63,9 @@ class Rollout(object):
                                                acs=self.buf_acs)
         '''
         #we define a new int_rew for the new transparency project to evaluate its inside relation
-        int_rew =  (self.buf_rews[:] - self.buf_ext_rews) ** 2
+        int_rew =  (self.dynamics.calculate_predict_reward(ob=self.buf_obs,
+                                               last_ob=self.buf_obs_last,
+                                               acs=self.buf_acs) - self.buf_ext_rews) ** 2
         
         self.buf_rews[:] = self.reward_fun(int_rew=int_rew, ext_rew=self.buf_ext_rews)
 
