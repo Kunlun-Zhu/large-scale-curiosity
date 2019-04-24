@@ -72,7 +72,7 @@ class Dynamics(object):
         sli = lambda i: slice(i * chunk_size, (i + 1) * chunk_size)
         return np.concatenate([getsess().run(self.loss,
                                              {self.obs: ob[sli(i)], self.last_ob: last_ob[sli(i)],
-                                              self.ac: acs[sli(i)]}) for i in range(n_chunks)], 0)
+                                              self.ac: acs[sli(i)]}) for i inrange(n_chunks)], 0)
 
 
 class UNet(Dynamics):
