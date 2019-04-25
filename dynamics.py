@@ -62,6 +62,7 @@ class Dynamics(object):
             n_out_features = self.out_features.get_shape()[-1].value
             x = tf.layers.dense(add_ac(x), n_out_features, activation=None)
             x = unflatten_first_dim(x, sh)
+        #here is how exactly calculate the f(s,a)
         return tf.reduce_mean((x - tf.stop_gradient(self.out_features)) ** 2, -1)
 
     def calculate_loss(self, ob, last_ob, acs):
@@ -72,7 +73,7 @@ class Dynamics(object):
         sli = lambda i: slice(i * chunk_size, (i + 1) * chunk_size)
         return np.concatenate([getsess().run(self.loss,
                                              {self.obs: ob[sli(i)], self.last_ob: last_ob[sli(i)],
-                                              self.ac: acs[sli(i)]}) for i inrange(n_chunks)], 0)
+                                              self.ac: acs[sli(i)]}) for i in range(n_chunks)], 0)
 
 
 class UNet(Dynamics):
