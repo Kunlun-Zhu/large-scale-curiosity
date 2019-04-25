@@ -102,6 +102,7 @@ class Rollout(object):
             self.buf_nlps[sli, t] = nlps
             self.buf_acs[sli, t] = acs
             if t > 0:
+                #here is the place where buf_ext_rews been calculated
                 self.buf_ext_rews[sli, t - 1] = prevrews
             # if t > 0:
             #     dyn_logp = self.policy.call_reward(prev_feat, pol_feat, prev_acs)
