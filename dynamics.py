@@ -42,6 +42,7 @@ class Dynamics(object):
 
     def get_loss(self):
         ac = tf.one_hot(self.ac, self.ac_space.n, axis=2)
+        #ac is from the accuracy in the auxiliary task
         sh = tf.shape(ac)
         ac = flatten_two_dims(ac)
 
