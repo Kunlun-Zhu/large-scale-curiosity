@@ -42,7 +42,7 @@ class FeatureExtractor(object):
         if x_has_timesteps:
             sh = tf.shape(x)
             x = flatten_two_dims(x)
-        with tf.variable_scope(self.scope + "_features", reuse=reuse):
+        with tf.variable_scope(self.scope + "_values", reuse=reuse):
             x = (tf.to_float(x) - self.ob_mean) / self.ob_std
             x = small_convnet(x, nl=nl, feat_dim=self.feat_dim, last_nl=None, layernormalize=self.layernormalize)
         if x_has_timesteps:
