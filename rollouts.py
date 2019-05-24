@@ -46,7 +46,7 @@ class Rollout(object):
         self.best_ext_ret = None
         self.all_visited_rooms = []
         self.all_scores = []
-
+        self.all_ep_r = []
         self.step_count = 0
 
     def collect_rollout(self):
@@ -92,7 +92,7 @@ class Rollout(object):
             sli = slice(l * self.lump_stride, (l + 1) * self.lump_stride)
 
             acs, vpreds, nlps = self.policy.get_ac_value_nlp(obs)
-            self.env_step(l, acs)
+            self.env_step(l, acs)   `
 
             # self.prev_feat[l] = dyn_feat
             # self.prev_acs[l] = acs
@@ -141,6 +141,13 @@ class Rollout(object):
 
             self.statlists['eprew'].extend(all_ep_infos['r'])
             self.stats['eprew_recent'] = np.mean(all_ep_infos['r'])
+
+            print('ep_info_r', all_ep_infos['r'])
+            all_ep_r.append(np.mean(all_ep_infos['r']))
+            
+            if (len(all_ep_r) % 100 == 0 and all_ep_r != 0):
+                np.save('all_ep_r_{}'.format(len(all_ep_r) // 100), all_ep_r)
+
             self.statlists['eplen'].extend(all_ep_infos['l'])
             self.stats['epcount'] += len(all_ep_infos['l'])
             self.stats['tcount'] += sum(all_ep_infos['l'])
