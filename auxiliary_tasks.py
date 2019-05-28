@@ -17,7 +17,6 @@ class FeatureExtractor(object):
         self.obs = self.policy.ph_ob
         self.ob_mean = self.policy.ob_mean
         self.ob_std = self.policy.ob_std
-        #we could try to turn get features into get value to reform the f(s,a)
         with tf.variable_scope(scope):
             self.last_ob = tf.placeholder(dtype=tf.int32,
                                           shape=(None, 1) + self.ob_space.shape, name='last_ob')

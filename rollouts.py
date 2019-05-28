@@ -46,7 +46,7 @@ class Rollout(object):
         self.best_ext_ret = None
         self.all_visited_rooms = []
         self.all_scores = []
-        self.all_ep_r = []
+
         self.step_count = 0
 
     def collect_rollout(self):
@@ -57,15 +57,10 @@ class Rollout(object):
         self.update_info()
 
     def calculate_reward(self):
-
         int_rew = self.dynamics.calculate_loss(ob=self.buf_obs,
                                                last_ob=self.buf_obs_last,
                                                acs=self.buf_acs)
-
-        #we define a new int_rew for the new transparency project to evaluate its inside relation
-
-        
-        self.buf_rews[:] = self.reward_fun(int_rew=0, ext_rew=self.buf_ext_rews)
+        self.buf_rews[:] = self.reward_fun(int_rew=int_rew, ext_rew=self.buf_ext_rews)
 
     def rollout_step(self):
         t = self.step_count % self.nsteps
@@ -90,7 +85,7 @@ class Rollout(object):
             sli = slice(l * self.lump_stride, (l + 1) * self.lump_stride)
 
             acs, vpreds, nlps = self.policy.get_ac_value_nlp(obs)
-            self.env_step(l, acs)   
+            self.env_step(l, acs)
 
             # self.prev_feat[l] = dyn_feat
             # self.prev_acs[l] = acs
@@ -100,7 +95,6 @@ class Rollout(object):
             self.buf_nlps[sli, t] = nlps
             self.buf_acs[sli, t] = acs
             if t > 0:
-                #here is the place where buf_ext_rews been calculated
                 self.buf_ext_rews[sli, t - 1] = prevrews
             # if t > 0:
             #     dyn_logp = self.policy.call_reward(prev_feat, pol_feat, prev_acs)
@@ -139,13 +133,6 @@ class Rollout(object):
 
             self.statlists['eprew'].extend(all_ep_infos['r'])
             self.stats['eprew_recent'] = np.mean(all_ep_infos['r'])
-
-            print('ep_info_r', all_ep_infos['r'])
-            self.all_ep_r.append(np.mean(all_ep_infos['r']))
-            
-            if (len(self.all_ep_r) % 100 == 0 and self.all_ep_r != 0):
-                np.save('all_ep_r_{}'.format(len(self.all_ep_r) // 100), self.all_ep_r)
-
             self.statlists['eplen'].extend(all_ep_infos['l'])
             self.stats['epcount'] += len(all_ep_infos['l'])
             self.stats['tcount'] += sum(all_ep_infos['l'])

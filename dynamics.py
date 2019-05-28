@@ -23,7 +23,7 @@ class Dynamics(object):
             self.features = tf.stop_gradient(self.auxiliary_task.features)
 
         self.out_features = self.auxiliary_task.next_features
-        #use out_rewards here to replace out_features in order to change the f(s,a) for reward matter
+
         with tf.variable_scope(self.scope + "_loss"):
             self.loss = self.get_loss()
 
@@ -42,7 +42,6 @@ class Dynamics(object):
 
     def get_loss(self):
         ac = tf.one_hot(self.ac, self.ac_space.n, axis=2)
-        #ac is from the accuracy in the auxiliary task
         sh = tf.shape(ac)
         ac = flatten_two_dims(ac)
 
@@ -63,9 +62,7 @@ class Dynamics(object):
             n_out_features = self.out_features.get_shape()[-1].value
             x = tf.layers.dense(add_ac(x), n_out_features, activation=None)
             x = unflatten_first_dim(x, sh)
-        #here is how exactly calculate the f(s,a)
         return tf.reduce_mean((x - tf.stop_gradient(self.out_features)) ** 2, -1)
-
 
     def calculate_loss(self, ob, last_ob, acs):
         n_chunks = 8
