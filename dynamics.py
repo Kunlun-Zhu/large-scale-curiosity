@@ -64,7 +64,8 @@ class Dynamics(object):
             x = tf.layers.dense(add_ac(x), n_out_features, activation=None)
             x = unflatten_first_dim(x, sh)
         #here is how exactly calculate the f(s,a)
-        return tf.reduce_mean((x - tf.stop_gradient(self.out_rewards)) ** 2, -1)
+        return tf.reduce_mean((x - tf.stop_gradient(self.out_features)) ** 2, -1)
+
 
     def calculate_loss(self, ob, last_ob, acs):
         n_chunks = 8
