@@ -67,7 +67,7 @@ class Rollout(object):
                                                last_ob=self.buf_obs_last,
                                                acs=self.buf_acs) - self.buf_ext_rews) ** 2
         
-        self.buf_rews[:] = self.reward_fun(int_rew=int_rew, ext_rew=self.buf_ext_rews)
+        self.buf_rews[:] = self.reward_fun(int_rew=0, ext_rew=self.buf_ext_rews)
 
     def rollout_step(self):
         t = self.step_count % self.nsteps
