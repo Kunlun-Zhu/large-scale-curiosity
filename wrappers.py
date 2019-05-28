@@ -25,6 +25,7 @@ class MaxAndSkipEnv(gym.Wrapper):
         # most recent raw observations (for max pooling across time steps)
         self._obs_buffer = deque(maxlen=2)
         self._skip = skip
+        
 
     def step(self, action):
         """Repeat action, sum reward, and max over last observations."""

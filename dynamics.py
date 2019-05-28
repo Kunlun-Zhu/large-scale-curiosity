@@ -23,7 +23,6 @@ class Dynamics(object):
             self.features = tf.stop_gradient(self.auxiliary_task.features)
 
         self.out_features = self.auxiliary_task.next_features
-        self.out_rewards = self.auxiliary_task.next_rewards
         #use out_rewards here to replace out_features in order to change the f(s,a) for reward matter
         with tf.variable_scope(self.scope + "_loss"):
             self.loss = self.get_loss()
