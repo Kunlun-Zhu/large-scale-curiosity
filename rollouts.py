@@ -141,10 +141,10 @@ class Rollout(object):
             self.stats['eprew_recent'] = np.mean(all_ep_infos['r'])
 
             print('ep_info_r', all_ep_infos['r'])
-            all_ep_r.append(np.mean(all_ep_infos['r']))
+            self.all_ep_r.append(np.mean(all_ep_infos['r']))
             
-            if (len(all_ep_r) % 100 == 0 and all_ep_r != 0):
-                np.save('all_ep_r_{}'.format(len(all_ep_r) // 100), all_ep_r)
+            if (len(self.all_ep_r) % 100 == 0 and self.all_ep_r != 0):
+                np.save('all_ep_r_{}'.format(len(self.all_ep_r) // 100), self.all_ep_r)
 
             self.statlists['eplen'].extend(all_ep_infos['l'])
             self.stats['epcount'] += len(all_ep_infos['l'])
