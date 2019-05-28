@@ -92,7 +92,7 @@ class Rollout(object):
             sli = slice(l * self.lump_stride, (l + 1) * self.lump_stride)
 
             acs, vpreds, nlps = self.policy.get_ac_value_nlp(obs)
-            self.env_step(l, acs)   `
+            self.env_step(l, acs)   
 
             # self.prev_feat[l] = dyn_feat
             # self.prev_acs[l] = acs
