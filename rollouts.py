@@ -63,7 +63,7 @@ class Rollout(object):
                                                acs=self.buf_acs)
         '''
         self.buf_rews[:] = self.reward_fun(int_rew=0, ext_rew=self.buf_ext_rews)
-        print('current reward:', buf_rews[:])
+        print('current reward:', self.buf_rews[:])
 
 
     def rollout_step(self):
