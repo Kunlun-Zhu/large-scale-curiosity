@@ -66,7 +66,10 @@ class PpoOptimizer(object):
             approxkl = .5 * tf.reduce_mean(tf.square(neglogpac - self.ph_oldnlp))
             clipfrac = tf.reduce_mean(tf.to_float(tf.abs(pg_losses2 - pg_loss_surr) > 1e-6))
 
+            
             self.total_loss = pg_loss + ent_loss + vf_loss
+
+
             self.to_report = {'tot': self.total_loss, 'pg': pg_loss, 'vf': vf_loss, 'ent': entropy,
                               'approxkl': approxkl, 'clipfrac': clipfrac}
 
@@ -131,8 +134,7 @@ class PpoOptimizer(object):
             delta = rews[:, t] + gamma * nextvals * nextnotnew - self.rollout.buf_vpreds[:, t]
             self.buf_advs[:, t] = lastgaelam = delta + gamma * lam * nextnotnew * lastgaelam
         self.buf_rets[:] = self.buf_advs + self.rollout.buf_vpreds
-
-        self.total_loss += self.rollout.int_rew 
+        self.total_loss += self.rollout.int_rew
 
     def update(self):
         if self.normrew:

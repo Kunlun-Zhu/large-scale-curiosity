@@ -7,6 +7,7 @@ from utils import small_convnet, flatten_two_dims, unflatten_first_dim, getsess,
 
 class Dynamics(object):
     def __init__(self, auxiliary_task, predict_from_pixels, feat_dim=None, scope='dynamics'):
+        
         self.scope = scope
         self.auxiliary_task = auxiliary_task
         self.hidsize = self.auxiliary_task.hidsize
