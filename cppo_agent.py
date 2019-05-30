@@ -132,6 +132,8 @@ class PpoOptimizer(object):
             self.buf_advs[:, t] = lastgaelam = delta + gamma * lam * nextnotnew * lastgaelam
         self.buf_rets[:] = self.buf_advs + self.rollout.buf_vpreds
 
+        self.total_loss += self.rollout.int_rew 
+
     def update(self):
         if self.normrew:
             rffs = np.array([self.rff.update(rew) for rew in self.rollout.buf_rews.T])
