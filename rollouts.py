@@ -68,6 +68,10 @@ class Rollout(object):
         print('current reward:', self.buf_rews[:])
 
 
+    def get_loss(self):
+
+        return tf.reduce_mean((self.policy.vpreds - self.buf_ext_rews)**2)
+
     def rollout_step(self):
         t = self.step_count % self.nsteps
         s = t % self.nsteps_per_seg
