@@ -25,6 +25,7 @@ class Rollout(object):
         self.reward_fun = lambda ext_rew, int_rew: ext_rew_coeff * np.clip(ext_rew, -1., 1.) + int_rew_coeff * int_rew
 
         self.buf_vpreds = np.empty((nenvs, self.nsteps), np.float32)
+        self.buf_vpreds_tensor = tf.placeholder(tf.float32, (nenvs, self.nsteps))
         self.buf_nlps = np.empty((nenvs, self.nsteps), np.float32)
         self.buf_rews = np.empty((nenvs, self.nsteps), np.float32)
         self.buf_ext_rews = np.empty((nenvs, self.nsteps), np.float32)
@@ -71,7 +72,7 @@ class Rollout(object):
 
     def get_loss(self):
 
-        return tf.reduce_mean((self.policy.vpred - self.buf_ext_rews)**2)
+        return tf.reduce_mean((self.buf_vpreds_tensor - self.buf_ext_rews)**2)
 
     def rollout_step(self):
         t = self.step_count % self.nsteps
@@ -103,6 +104,7 @@ class Rollout(object):
             self.buf_obs[sli, t] = obs
             self.buf_news[sli, t] = news
             self.buf_vpreds[sli, t] = vpreds
+            self.buf_vpreds_tensor[sli, t] = self.policy.vpred
             self.buf_nlps[sli, t] = nlps
             self.buf_acs[sli, t] = acs
             if t > 0:
