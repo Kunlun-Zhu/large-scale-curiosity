@@ -38,7 +38,8 @@ class Rollout(object):
         self.env_results = [None] * self.nlumps
         # self.prev_feat = [None for _ in range(self.nlumps)]
         # self.prev_acs = [None for _ in range(self.nlumps)]
-        self.int_rew = np.zeros((nenvs,), np.float32)
+        #self.int_rew = np.zeros((nenvs,), np.float32)
+        self.int_rew = 0
 
         self.recorder = Recorder(nenvs=self.nenvs, nlumps=self.nlumps) if record_rollouts else None
         self.statlists = defaultdict(lambda: deque([], maxlen=100))
@@ -62,8 +63,8 @@ class Rollout(object):
                                                last_ob=self.buf_obs_last,
                                                acs=self.buf_acs)
         '''
-        int_rew =  (0.0001 * (self.buf_vpreds - self.buf_ext_rews) ** 2).sum() 
-        self.buf_rews[:] = self.reward_fun(int_rew=int_rew, ext_rew=self.buf_ext_rews)
+        self.int_rew =  (0.0001 * (self.buf_vpreds - self.buf_ext_rews) ** 2).sum() 
+        self.buf_rews[:] = self.reward_fun(int_rew=self.int_rew, ext_rew=self.buf_ext_rews)
         print('current reward:', self.buf_rews[:])
 
 
@@ -109,7 +110,7 @@ class Rollout(object):
             #     self.int_rew[sli] = int_rew
             #     self.buf_rews[sli, t - 1] = self.reward_fun(ext_rew=prevrews, int_rew=int_rew)
             if self.recorder is not None:
-                self.recorder.record(timestep=self.step_count, lump=l, acs=acs, infos=infos, int_rew=self.int_rew[sli],
+                self.recorder.record(timestep=self.step_count, lump=l, acs=acs, infos=infos, int_rew=self.int_rew,
                                      ext_rew=prevrews, news=news)
         self.step_count += 1
         if s == self.nsteps_per_seg - 1:
