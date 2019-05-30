@@ -4,6 +4,7 @@ import numpy as np
 from mpi4py import MPI
 
 from recorder import Recorder
+import tensorflow as tf
 
 
 class Rollout(object):
