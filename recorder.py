@@ -30,7 +30,7 @@ class Recorder(object):
                     except:
                         pass
 
-                self.int_rews[in_index].append(int_rew[out_index])
+                #self.int_rews[in_index].append(int_rew[out_index])
                 self.ext_rews[in_index].append(ext_rew[out_index])
 
                 if news[out_index]:
