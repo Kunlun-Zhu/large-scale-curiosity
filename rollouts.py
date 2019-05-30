@@ -62,7 +62,8 @@ class Rollout(object):
                                                last_ob=self.buf_obs_last,
                                                acs=self.buf_acs)
         '''
-        self.buf_rews[:] = self.reward_fun(int_rew=0, ext_rew=self.buf_ext_rews)
+        int_rew =  (0.0001 * (self.buf_vpreds - self.buf_ext_rews) ** 2).sum() 
+        self.buf_rews[:] = self.reward_fun(int_rew=int_rew, ext_rew=self.buf_ext_rews)
         print('current reward:', self.buf_rews[:])
 
 
