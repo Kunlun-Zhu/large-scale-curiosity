@@ -25,7 +25,7 @@ class Rollout(object):
         self.reward_fun = lambda ext_rew, int_rew: ext_rew_coeff * np.clip(ext_rew, -1., 1.) + int_rew_coeff * int_rew
 
         self.buf_vpreds = np.empty((nenvs, self.nsteps), np.float32)
-        self.buf_vpreds_tensor = tf.placeholder(tf.float32, (nenvs, self.nsteps))
+        self.buf_vpreds_tensor = self.policy.vpred
         self.buf_nlps = np.empty((nenvs, self.nsteps), np.float32)
         self.buf_rews = np.empty((nenvs, self.nsteps), np.float32)
         self.buf_ext_rews = np.empty((nenvs, self.nsteps), np.float32)
