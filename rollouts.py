@@ -71,8 +71,8 @@ class Rollout(object):
 
 
     def get_loss(self):
-        print('buf_vpred', self.buf_vpreds_tensor, 'buf_ext_rews', buf_ext_rews)
-        
+        print('buf_vpred', self.buf_vpreds_tensor, 'buf_ext_rews', self.buf_ext_rews)
+
         return tf.reduce_mean((self.buf_vpreds_tensor - self.buf_ext_rews)**2)
 
     def rollout_step(self):
