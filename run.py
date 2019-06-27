@@ -95,9 +95,7 @@ class Trainer(object):
         self.agent.to_report['aux'] = tf.reduce_mean(self.feature_extractor.loss)
         self.agent.total_loss += self.agent.to_report['aux']
         self.agent.to_report['dyn_loss'] = tf.reduce_mean(self.dynamics.loss)
-
-        #self.agent.total_loss += self.agent.to_report['dyn_loss']
-        
+        self.agent.total_loss += self.agent.to_report['dyn_loss']
         self.agent.to_report['feat_var'] = tf.reduce_mean(tf.nn.moments(self.feature_extractor.features, [0, 1])[1])
 
     def _set_env_vars(self):
@@ -202,8 +200,8 @@ if __name__ == '__main__':
     parser.add_argument('--seed', help='RNG seed', type=int, default=0)
     parser.add_argument('--dyn_from_pixels', type=int, default=0)
     parser.add_argument('--use_news', type=int, default=0)
-    parser.add_argument('--ext_coeff', type=float, default=1.0)
-    parser.add_argument('--int_coeff', type=float, default=1.0)
+    parser.add_argument('--ext_coeff', type=float, default=0.)
+    parser.add_argument('--int_coeff', type=float, default=1.)
     parser.add_argument('--layernorm', type=int, default=0)
     parser.add_argument('--feat_learning', type=str, default="none",
                         choices=["none", "idf", "vaesph", "vaenonsph", "pix2pix"])

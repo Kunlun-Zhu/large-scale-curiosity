@@ -66,14 +66,25 @@ class PpoOptimizer(object):
             approxkl = .5 * tf.reduce_mean(tf.square(neglogpac - self.ph_oldnlp))
             clipfrac = tf.reduce_mean(tf.to_float(tf.abs(pg_losses2 - pg_loss_surr) > 1e-6))
 
-            
             self.total_loss = pg_loss + ent_loss + vf_loss
-
-
             self.to_report = {'tot': self.total_loss, 'pg': pg_loss, 'vf': vf_loss, 'ent': entropy,
                               'approxkl': approxkl, 'clipfrac': clipfrac}
 
     def start_interaction(self, env_fns, dynamics, nlump=2):
+        self.loss_names, self._losses = zip(*list(self.to_report.items()))
+
+        params = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES)
+        if MPI.COMM_WORLD.Get_size() > 1:
+            trainer = MpiAdamOptimizer(learning_rate=self.ph_lr, comm=MPI.COMM_WORLD)
+        else:
+            trainer = tf.train.AdamOptimizer(learning_rate=self.ph_lr)
+        gradsandvars = trainer.compute_gradients(self.total_loss, params)
+        self._train = trainer.apply_gradients(gradsandvars)
+
+        if MPI.COMM_WORLD.Get_rank() == 0:
+            getsess().run(tf.variables_initializer(tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES)))
+        bcast_tf_vars_from_root(getsess(), tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES))
+
         self.all_visited_rooms = []
         self.all_scores = []
         self.nenvs = nenvs = len(env_fns)
@@ -92,25 +103,6 @@ class PpoOptimizer(object):
                                ext_rew_coeff=self.ext_coeff,
                                record_rollouts=self.use_recorder,
                                dynamics=dynamics)
-
-        self.total_loss += self.rollout.get_loss()
-        self.to_report['tot'] = self.total_loss
-
-        self.loss_names, self._losses = zip(*list(self.to_report.items()))
-
-        params = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES)
-        if MPI.COMM_WORLD.Get_size() > 1:
-            trainer = MpiAdamOptimizer(learning_rate=self.ph_lr, comm=MPI.COMM_WORLD)
-        else:
-            trainer = tf.train.AdamOptimizer(learning_rate=self.ph_lr)
-        gradsandvars = trainer.compute_gradients(self.total_loss, params)
-        self._train = trainer.apply_gradients(gradsandvars)
-
-        if MPI.COMM_WORLD.Get_rank() == 0:
-            getsess().run(tf.variables_initializer(tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES)))
-        bcast_tf_vars_from_root(getsess(), tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES))
-
-
 
         self.buf_advs = np.zeros((nenvs, self.rollout.nsteps), np.float32)
         self.buf_rets = np.zeros((nenvs, self.rollout.nsteps), np.float32)
