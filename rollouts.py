@@ -46,6 +46,7 @@ class Rollout(object):
         self.best_ext_ret = None
         self.all_visited_rooms = []
         self.all_scores = []
+        self.all_ep_r = []
 
         self.step_count = 0
 
@@ -132,6 +133,13 @@ class Rollout(object):
             all_ep_infos = {k: [i[k] for i in all_ep_infos] for k in keys_}
 
             self.statlists['eprew'].extend(all_ep_infos['r'])
+
+            self.all_ep_r.append(np.mean(all_ep_infos['r']))
+            
+            if (len(self.all_ep_r) % 100 == 0 and self.all_ep_r != 0):
+                np.save('all_ep_r_{}_v_int'.format(len(self.all_ep_r) // 100), self.all_ep_r)
+
+
             self.stats['eprew_recent'] = np.mean(all_ep_infos['r'])
             self.statlists['eplen'].extend(all_ep_infos['l'])
             self.stats['epcount'] += len(all_ep_infos['l'])
