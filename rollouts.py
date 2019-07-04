@@ -137,7 +137,7 @@ class Rollout(object):
             self.all_ep_r.append(np.mean(all_ep_infos['r']))
             
             if (len(self.all_ep_r) % 100 == 0 and self.all_ep_r != 0):
-                np.save('all_ep_r_{}_int_only'.format(len(self.all_ep_r) // 100), self.all_ep_r)
+                np.save('all_ep_r_{}_pacman_basline'.format(len(self.all_ep_r) // 100), self.all_ep_r)
 
 
             self.stats['eprew_recent'] = np.mean(all_ep_infos['r'])

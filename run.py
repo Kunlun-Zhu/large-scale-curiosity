@@ -162,7 +162,7 @@ def get_experiment_environment(**args):
 
 
 def add_environments_params(parser):
-    parser.add_argument('--env', help='environment ID', default='BreakoutNoFrameskip-v4',
+    parser.add_argument('--env', help='environment ID', default='MsPacmanNoFrameskip-v0',
                         type=str)
     parser.add_argument('--max-episode-steps', help='maximum number of timesteps for episode', default=4500, type=int)
     parser.add_argument('--env_kind', type=str, default="atari")
@@ -200,8 +200,8 @@ if __name__ == '__main__':
     parser.add_argument('--seed', help='RNG seed', type=int, default=0)
     parser.add_argument('--dyn_from_pixels', type=int, default=0)
     parser.add_argument('--use_news', type=int, default=0)
-    parser.add_argument('--ext_coeff', type=float, default=0.)
-    parser.add_argument('--int_coeff', type=float, default=1.0)
+    parser.add_argument('--ext_coeff', type=float, default=1.0)
+    parser.add_argument('--int_coeff', type=float, default=0.0)
     parser.add_argument('--layernorm', type=int, default=0)
     parser.add_argument('--feat_learning', type=str, default="none",
                         choices=["none", "idf", "vaesph", "vaenonsph", "pix2pix"])
